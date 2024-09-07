@@ -1,3 +1,5 @@
+import fetchIdBooks from "@/lib/fetch-id-book";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 
 const MockData = {
@@ -11,10 +13,21 @@ const MockData = {
   coverImgUrl:
     "https://shopping-phinf.pstatic.net/main_3888828/38888282618.20230913071643.jpg",
 };
-export default function Page() {
-  const router = useRouter();
+export const getServerSideProps = async (context:GetServerSidePropsContext) =>{
+  const id = context.params!.id;
+  const books = await fetchIdBooks(Number(id));
+  return {
+    props :{
+      books
+    }
+  }
+}
+export default function Page({books}:InferGetServerSidePropsType<typeof getServerSideProps>) {
+
+  if(!books)
+    return "다시 시도해주세요";
   const { id, title, subTitle, description, author, publisher, coverImgUrl } =
-    MockData;
+    books;
 
   return (<div  className="h-full w-full flex flex-col items-center justify-center gap-4" >
             <img src={coverImgUrl} alt={title} className="w-[60vh]  h-[60vh]  " />
