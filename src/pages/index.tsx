@@ -1,10 +1,11 @@
 import SearchLayout from "@/components/Search_Layout";
 import { ReactNode } from "react";
 import BookItem from "@/components/BookItem";
-import { InferGetServerSidePropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 import fetchBooks from "@/lib/fetch-books";
 import fetchBestBooks from "@/lib/fetch-randombooks";
-export const  getServerSideProps = async () =>{
+export const  getStaticProps = async () =>{
+  console.log("인덱스 페이지");
     const [AllBooks,BestBooks] =await Promise.all([
       fetchBooks(),
       fetchBestBooks(),
@@ -14,10 +15,11 @@ export const  getServerSideProps = async () =>{
     props:{
       AllBooks,
       BestBooks,
-    }
+    },
+    revalidate :3,
   }
 }
-export default function Home({AllBooks,BestBooks}:InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function Home({AllBooks,BestBooks}:InferGetStaticPropsType<typeof getStaticProps>) {
   
   return (
     <div className="flex flex-col gap-12 mt-20 ">
